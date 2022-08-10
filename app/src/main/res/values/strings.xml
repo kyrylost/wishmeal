@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Wishmeal</string>
+    <string name="wish_enter">Уведіть, куди хочете піти</string>
+    <string name="add_wish_btn">Додати у список бажань</string>
+    <string name="visited">Відвідані</string>
+    <string name="unvisited">Не відвідані</string>
+    <string name="allCuisine">Усі</string>
+    <string name="ukrainianCuisine">Українська</string>
+    <string name="europeanCuisine">Європейська</string>
+    <string name="americanCuisine">Американська</string>
+    <string name="asianCuisine">Азійська</string>
+    <string name="add_new">+</string>
+
+    <string-array name="cuisine">
+        <item>Інше</item>
+        <item>Українська</item>
+        <item>Європейська</item>
+        <item>Американська</item>
+        <item>Азійська</item>
+    </string-array>
+
+
+</resources>
