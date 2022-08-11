@@ -55,6 +55,17 @@ class AppViewModel : ViewModel(){
     }
 
     @OptIn(DelicateCoroutinesApi::class)
+    fun updateStatusById(wish: Wish) {
+        GlobalScope.launch {
+            val status = !wish.wishCompleted!!
+            val id = wish.uid
+            wishDao.updateStatusById(status, id).apply {
+                getWishesFilteredByStatusAndCountry()
+            }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
     fun insertNewWish(wish: Wish) {
         GlobalScope.launch {
             wishAmount++

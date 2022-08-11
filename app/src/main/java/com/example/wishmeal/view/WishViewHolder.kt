@@ -1,35 +1,32 @@
 package com.example.wishmeal.view
 
 import android.graphics.Color
-import android.view.View
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wishmeal.databinding.WishCardBinding
 import com.example.wishmeal.model.Wish
 
 class WishViewHolder (
     private val wishCardBinding: WishCardBinding,
-    private val onItemClicked: (position: Int) -> Unit)
-    : RecyclerView.ViewHolder(wishCardBinding.root), View.OnClickListener {
+) : RecyclerView.ViewHolder(wishCardBinding.root) {
 
-    init {
-        itemView.setOnClickListener(this)
-    }
+    val onItemClickListener = MutableLiveData<Wish>()
+    val onItemLongClickListener = MutableLiveData<Wish>()
 
     fun bindNote(wish: Wish) {
         wishCardBinding.wishCardText.text = wish.wishText
+        if (wish.wishCompleted == true) {
+            wishCardBinding.wishCardView.setCardBackgroundColor(
+                Color.parseColor("#B5FFB7"))
+        }
 
-//        wishCardBinding.wishCardView.setOnClickListener {
-//            wishCardBinding.wishCardView.setCardBackgroundColor(
-//                Color.parseColor("#B5FFB7")
-//            )
-//        }
-    }
+        wishCardBinding.wishCardView.setOnClickListener {
+            onItemClickListener.value = wish
+        }
 
-    override fun onClick(v: View) {
-        val position = adapterPosition
-        onItemClicked(position)
+        wishCardBinding.wishCardView.setOnLongClickListener {
+            onItemLongClickListener.value = wish
+            true
+        }
     }
-//        wishCardBinding.wishCardView.setOnLongClickListener {
-//            wishCardBinding.wishCardView.display.state
-//        }
 }

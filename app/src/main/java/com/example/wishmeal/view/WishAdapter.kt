@@ -1,20 +1,31 @@
 package com.example.wishmeal.view
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wishmeal.databinding.WishCardBinding
 import com.example.wishmeal.model.Wish
 
-class WishAdapter (private val wishes: List<Wish>,
-                   private val onItemClicked: (position: Int) -> Unit)
+class WishAdapter (private val wishes: List<Wish>)
     : RecyclerView.Adapter<WishViewHolder>() {
+
+    lateinit var onItemClickListener : MutableLiveData<Wish>
+    lateinit var onItemLongClickListener : MutableLiveData<Wish>
+
+    var allowListeningToItemClick = MutableLiveData<Boolean>()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WishViewHolder {
         val from = LayoutInflater.from(parent.context)
         val binding = WishCardBinding.inflate(from, parent, false)
-        return WishViewHolder(binding, onItemClicked)
+
+        val wishViewHolder = WishViewHolder(binding)
+        onItemClickListener = wishViewHolder.onItemClickListener
+        onItemLongClickListener = wishViewHolder.onItemLongClickListener
+        allowListeningToItemClick.value = true
+
+        return wishViewHolder
     }
 
     override fun onBindViewHolder(holder: WishViewHolder, position: Int) {
@@ -22,12 +33,4 @@ class WishAdapter (private val wishes: List<Wish>,
     }
 
     override fun getItemCount(): Int = wishes.size
-
-//    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        init {
-//            itemView.setOnClickListener {
-//                onItemClick?.invoke(wishes[adapterPosition])
-//            }
-//        }
-//    }
 }

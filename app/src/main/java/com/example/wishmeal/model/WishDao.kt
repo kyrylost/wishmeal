@@ -19,6 +19,9 @@ interface WishDao {
     @Query("SELECT * FROM wish WHERE wish_completed LIKE :wish_status AND country LIKE :country")
     fun findByStatusAndCountry(wish_status: Boolean, country: String) : List<Wish>
 
+    @Query("UPDATE wish SET wish_completed = :wish_status WHERE uid = :id")
+    fun updateStatusById(wish_status: Boolean, id: Int)
+
     @Insert
     fun insertAll(vararg wishes: Wish)
 

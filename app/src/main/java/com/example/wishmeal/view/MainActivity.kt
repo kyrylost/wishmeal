@@ -22,9 +22,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appViewModel : AppViewModel
     lateinit var wishes : List<Wish>
 
-    private fun onListItemClick(position: Int) {
-        Toast.makeText(this, wishes[position].wishText, Toast.LENGTH_SHORT).show()
-    }
+//    private fun onListItemClick(position: Int) {
+//        Toast.makeText(this, wishes[position].wishText, Toast.LENGTH_SHORT).show()
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,11 +40,20 @@ class MainActivity : AppCompatActivity() {
             Log.d("wishList", wishList.toString())
 
             binding.wishes.apply {
-                wishes = wishList
-                val a = WishAdapter (wishList) { position -> onListItemClick(position) }
+                val wishAdapter = WishAdapter(wishList)
                 layoutManager = GridLayoutManager(applicationContext, 1)
-                adapter = a
+                adapter = wishAdapter
 
+                wishAdapter.allowListeningToItemClick.observe(this@MainActivity) {
+
+                    wishAdapter.onItemClickListener.observe(this@MainActivity) { wish->
+                        appViewModel.updateStatusById(wish)
+                    }
+                    wishAdapter.onItemLongClickListener.observe(this@MainActivity) {
+                        // Edit wish
+                    }
+
+                }
 
             }
         }
