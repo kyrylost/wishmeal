@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class Wish(
     @PrimaryKey val uid : Int,
-    @ColumnInfo(name = "wish_text") val wishText: String?,
     @ColumnInfo(name = "country") val country: String?,
-    @ColumnInfo(name = "wish_completed") val wishCompleted: Boolean?
+    @ColumnInfo(name = "marked_as_favorite") val markedAsFavorite: Boolean?,
+    @ColumnInfo(name = "wish_text") val wishText: String?,
+    @ColumnInfo(name = "wish_completed") val wishCompleted: Boolean?,
 )
