@@ -3,14 +3,13 @@ package com.example.wishmeal.view
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wishmeal.R
 import com.example.wishmeal.databinding.ActivityMainBinding
 import com.example.wishmeal.model.Wish
@@ -20,11 +19,6 @@ import com.google.android.material.textfield.TextInputEditText
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appViewModel : AppViewModel
-    lateinit var wishes : List<Wish>
-
-//    private fun onListItemClick(position: Int) {
-//        Toast.makeText(this, wishes[position].wishText, Toast.LENGTH_SHORT).show()
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +31,12 @@ class MainActivity : AppCompatActivity() {
 
         appViewModel.wishesLiveData.observe(this) { wishList ->
 
-            Log.d("wishList", wishList.toString())
-
             binding.wishes.apply {
                 val wishAdapter = WishAdapter(wishList)
-                layoutManager = GridLayoutManager(applicationContext, 1)
+                layoutManager = LinearLayoutManager(
+                    this@MainActivity,
+                    LinearLayoutManager.VERTICAL,
+                    false)
                 adapter = wishAdapter
 
                 wishAdapter.allowListeningToItemClick.observe(this@MainActivity) {
@@ -51,6 +46,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     wishAdapter.onItemLongClickListener.observe(this@MainActivity) {
                         // Edit wish
+                    }
+                    wishAdapter.onStarClickListener.observe(this@MainActivity) { wish ->
+                        appViewModel.updateMarkById(wish)
                     }
 
                 }
@@ -123,7 +121,8 @@ class MainActivity : AppCompatActivity() {
                         uid = appViewModel.wishAmount,
                         wishText = wishText,
                         country = country,
-                        wishCompleted = false
+                        wishCompleted = false,
+                        markedAsFavorite = false
                     )
                     appViewModel.insertNewWish(wish)
                     dialogNewWish.dismiss()

@@ -13,6 +13,8 @@ class WishAdapter (private val wishes: List<Wish>)
     lateinit var onItemClickListener : MutableLiveData<Wish>
     lateinit var onItemLongClickListener : MutableLiveData<Wish>
 
+    lateinit var onStarClickListener: MutableLiveData<Wish>
+
     var allowListeningToItemClick = MutableLiveData<Boolean>()
 
 
@@ -23,6 +25,7 @@ class WishAdapter (private val wishes: List<Wish>)
         val wishViewHolder = WishViewHolder(binding)
         onItemClickListener = wishViewHolder.onItemClickListener
         onItemLongClickListener = wishViewHolder.onItemLongClickListener
+        onStarClickListener = wishViewHolder.onStarClickListener
         allowListeningToItemClick.value = true
 
         return wishViewHolder

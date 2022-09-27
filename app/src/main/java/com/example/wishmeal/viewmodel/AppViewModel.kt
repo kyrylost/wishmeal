@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.wishmeal.model.AppDatabase
 import com.example.wishmeal.model.Wish
 import com.example.wishmeal.model.WishDao
@@ -53,15 +51,28 @@ class AppViewModel : ViewModel(){
         GlobalScope.launch {
             if (categoryViewModel.currentCountry() == "other") {
                 wishesLiveData.postValue(
-                    wishDao.findByStatus(categoryViewModel.currentStatus())
+                    if (categoryViewModel.currentStatus())
+                        sortWishesByRate(wishDao.findByStatus(categoryViewModel.currentStatus()))
+                    else
+                        wishDao.findByStatus(categoryViewModel.currentStatus())
                 )
             }
             else {
                 wishesLiveData.postValue(
-                    wishDao.findByStatusAndCountry(
-                        categoryViewModel.currentStatus(),
-                        categoryViewModel.currentCountry()
-                    )
+                    if (categoryViewModel.currentStatus()) {
+                        sortWishesByRate(
+                            wishDao.findByStatusAndCountry(
+                                categoryViewModel.currentStatus(),
+                                categoryViewModel.currentCountry()
+                            )
+                        )
+                    }
+                    else {
+                        wishDao.findByStatusAndCountry(
+                            categoryViewModel.currentStatus(),
+                            categoryViewModel.currentCountry()
+                        )
+                    }
                 )
             }
         }
@@ -79,6 +90,17 @@ class AppViewModel : ViewModel(){
     }
 
     @OptIn(DelicateCoroutinesApi::class)
+    fun updateMarkById(wish: Wish) {
+        GlobalScope.launch {
+            val mark = !wish.markedAsFavorite!!
+            val id = wish.uid
+            wishDao.updateMarkById(mark, id).apply {
+                getWishesFilteredByStatusAndCountry()
+            }
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
     fun insertNewWish(wish: Wish) {
         GlobalScope.launch {
             wishAmount++
@@ -86,6 +108,18 @@ class AppViewModel : ViewModel(){
                 getWishesFilteredByStatusAndCountry()
             }
         }
+    }
+
+    private fun sortWishesByRate(wishes: List<Wish>): List<Wish> {
+        val markedWishes = mutableListOf<Wish>()
+        val unmarkedWishes = mutableListOf<Wish>()
+
+        for (wish in wishes) {
+            if (wish.markedAsFavorite!!) markedWishes.add(wish)
+            else unmarkedWishes.add(wish)
+        }
+
+        return markedWishes + unmarkedWishes
     }
 
 }
